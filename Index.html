@@ -3,10 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выбор Эфира / ✡ ⚔ 🎸</title>
+    <title>Вход в Эфир / Защищенный доступ</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Arial Black', sans-serif; background: #050b14; color: #fff; overflow: hidden; }
-        #choice-screen { display: flex; width: 100%; height: 100%; }
+        
+        /* ЭКРАН ВВОДА КЛЮЧА */
+        #lock-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050b14; z-index: 999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .lock-box {
+            background: #0b1e36; padding: 2.5rem; border-radius: 2rem;
+            border: 2px solid #00a8ff; text-align: center;
+            box-shadow: 0 0 30px rgba(0, 168, 255, 0.3); max-width: 320px; width: 100%;
+        }
+        .lock-box h3 { margin-top: 0; color: #00a8ff; font-size: 1.3rem; text-transform: uppercase; }
+        .pass-input {
+            width: 100%; padding: 12px; margin: 15px 0;
+            background: #050b14; border: 1px solid #00a8ff; border-radius: 8px;
+            color: #fff; text-align: center; font-size: 1.1rem; box-sizing: border-box;
+        }
+        .pass-btn {
+            background: #00a8ff; color: #fff; border: none; padding: 10px 20px;
+            border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem;
+        }
+        .pass-btn:hover { background: #008cd4; }
+        #error-msg { color: #ff4a4a; font-size: 0.85rem; margin-top: 10px; display: none; font-family: sans-serif; }
+
+        /* ЭКРАН ВЫБОРА СТОРОНЫ (Изначально скрыт) */
+        #choice-screen { display: none; width: 100%; height: 100%; }
         .side { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; text-align: center; padding: 2rem; transition: filter 0.3s; text-decoration: none; color: #fff; }
         .side-marzhonka { background: #0b1e36; border-right: 2px solid #00a8ff; }
         .side-marzhonka:hover { filter: brightness(1.2); }
@@ -20,6 +46,19 @@
     </style>
 </head>
 <body>
+
+    <!-- ОКНО ЗАЩИТЫ -->
+    <div id="lock-screen">
+        <div class="lock-box">
+            <h3>🔒 Доступ ограничен</h3>
+            <div style="font-size: 0.8rem; color: #a0b2c6; font-family: sans-serif;">Введите секретный ключ Гога Радиостанции:</div>
+            <input type="password" id="password-field" class="pass-input" placeholder="КЛЮЧ">
+            <button class="pass-btn" onclick="checkPassword()">ВОЙТИ В ЭФИР</button>
+            <div id="error-msg">Неверный ключ доступа!</div>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ ВЫБОР РАДИО -->
     <div id="choice-screen">
         <a href="marzhonka.html" class="side side-marzhonka">
             <div class="big-symbol">🕎</div>
@@ -32,5 +71,40 @@
             <div class="desc">Направо: Трагичные песни под гитару, Грозный.</div>
         </a>
     </div>
+
+<script>
+    // ТВОЙ СЕКРЕТНЫЙ ПАРОЛЬ (Можешь поменять внутри кавычек на любой)
+    const SECRET_KEY = "marzhonka1488";
+
+    // Проверка при клике на кнопку
+    function checkPassword() {
+        const input = document.getElementById('password-field').value;
+        const errorEl = document.getElementById('error-msg');
+        
+        if (input === SECRET_KEY) {
+            // Если угадал — сохраняем сессию, чтобы при обновлении страницы опять не вводить
+            sessionStorage.setItem('radio_access', 'granted');
+            unlockSite();
+        } else {
+            errorEl.style.display = 'block';
+            document.getElementById('password-field').value = '';
+        }
+    }
+
+    function unlockSite() {
+        document.getElementById('lock-screen').style.display = 'none';
+        document.getElementById('choice-screen').style.display = 'flex';
+    }
+
+    // Слушаем нажатие Enter в поле ввода
+    document.getElementById('password-field').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkPassword();
+    });
+
+    // Авто-вход, если пароль уже вводили в этой вкладке браузера
+    if (sessionStorage.getItem('radio_access') === 'granted') {
+        unlockSite();
+    }
+</script>
 </body>
 </html>
