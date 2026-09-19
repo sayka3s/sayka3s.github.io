@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор Эфира / ✡ ⚔ 🎸</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Arial Black', sans-serif; background: #050b14; color: #fff; overflow: hidden; }
+        #choice-screen { display: flex; width: 100%; height: 100%; }
+        .side { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; text-align: center; padding: 2rem; transition: filter 0.3s; text-decoration: none; color: #fff; }
+        .side-marzhonka { background: #0b1e36; border-right: 2px solid #00a8ff; }
+        .side-marzhonka:hover { filter: brightness(1.2); }
+        .side-mutsuraev { background: #1c1d1a; }
+        .side-mutsuraev:hover { filter: brightness(1.2); }
+        h2 { font-size: 2.2rem; margin: 10px 0; text-transform: uppercase; }
+        .side-marzhonka h2 { text-shadow: 0 0 15px #00a8ff; }
+        .side-mutsuraev h2 { text-shadow: 0 0 15px #8b0000; color: #d6d6d6; }
+        .desc { font-size: 0.9rem; opacity: 0.7; max-width: 280px; }
+        .big-symbol { font-size: 4.5rem; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div id="choice-screen">
+        <a href="marzhonka.html" class="side side-marzhonka">
+            <div class="big-symbol">🕎</div>
+            <h2>Радио Маржонка</h2>
+            <div class="desc">Налево: Рандомный израильский трек, истребители, Шалом.</div>
+        </a>
+        <a href="mutsuraev.html" class="side side-mutsuraev">
+            <div class="big-symbol">🎸</div>
+            <h2>Муцураев</h2>
+            <div class="desc">Направо: Трагичные песни под гитару, Грозный.</div>
+        </a>
+    </div>
+</body>
+</html>

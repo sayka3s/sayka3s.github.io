@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РАДИО МАРЖОНКА</title>
+    <style>
+        body { margin: 0; padding: 0; width: 100%; height: 100vh; font-family: 'Arial Black', sans-serif; background: #0b1e36; color: #fff; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .player-container { padding: 2.5rem 2rem; border-radius: 2rem; width: 100%; max-width: 400px; text-align: center; position: relative; background: #132f54; border: 4px double #00a8ff; box-shadow: 0 0 30px rgba(0,56,168,0.6); box-sizing: border-box; }
+        .back-btn { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.1); border: 1px solid #fff; color: #fff; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; text-decoration: none; }
+        h1 { text-shadow: 0 0 10px #00a8ff; border-bottom: 2px solid #fff; padding-bottom: 5px; margin: 0; font-size: 1.6rem; }
+        .now-playing { background: rgba(0,56,168,0.4); border: 2px dashed #fff; padding: 1rem; border-radius: 1rem; margin: 1.5rem 0; }
+        audio { width: 100%; accent-color: #00a8ff; }
+        .nav-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; }
+        .nav-buttons button { background: rgba(255,255,255,0.05); border: 1px solid #fff; color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.95rem; }
+        .towers-bg { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; opacity: 0.1; display: flex; justify-content: space-around; align-items: flex-end; padding: 0 40px; box-sizing: border-box; pointer-events: none; }
+        .tower { width: 40px; height: 75%; background: repeating-linear-gradient(to bottom, #fff 0px, #fff 4px, transparent 4px, transparent 8px); }
+        .jet-bg { position: fixed; font-size: 3rem; opacity: 0.05; z-index: -1; pointer-events: none; }
+        .jet-1 { top: 10%; left: 10%; transform: rotate(45deg); }
+        .jet-2 { bottom: 15%; right: 10%; transform: rotate(-135deg); }
+    </style>
+</head>
+<body>
+    <a class="back-btn" href="index.html">↩ К выбору</a>
+    <div class="jet-bg jet-1">✈️</div><div class="jet-bg jet-2">✈️</div>
+    <div class="player-container">
+        <div class="towers-bg"><div class="tower"></div><div class="tower"></div></div>
+        <div style="position: relative; z-index: 5;">
+            <div style="font-size: 2rem; margin-bottom: 0.3rem;">🕎 ✡ 🕎</div>
+            <h1>РАДИО МАРЖОНКА</h1>
+            <div style="font-size: 0.7rem; color: #00a8ff; font-style: italic; margin: 3px 0 12px 0;">בנימין נתניהу • Под покровительством Нетаньяху</div>
+            <div class="now-playing">
+                <span id="track-title" style="font-weight:bold; font-size:1.1rem; display:block;">✡ Жми Play ✡</span>
+            </div>
+            <div class="nav-buttons">
+                <button id="btn-prev">⏮ Назад</button>
+                <button id="btn-next">Вперед ⏭</button>
+            </div>
+            <audio id="audio-player" controls></audio>
+            <div style="margin-top:1.2rem; font-size:1.3rem; letter-spacing:8px; opacity:0.6;">✡ ✈️ ✡</div>
+        </div>
+    </div>
+<script>
+    const playlist = [
+        { title: "Unknown artist", url: "marzhonka_music/1.mp3" }, { title: "айс джи чёто нагр...", url: "marzhonka_music/2.mp3" },
+        { title: "андрюха у нас алтимейт...", url: "marzhonka_music/3.mp3" }, { title: "Блять не заводится...", url: "marzhonka_music/4.mp3" },
+        { title: "брат брат brat", url: "marzhonka_music/5.mp3" }, { title: "Воронины х рак м...", url: "marzhonka_music/6.mp3" },
+        { title: "ЕА_АЙС_ДЖИ_иск...", url: "marzhonka_music/7.mp3" }, { title: "ебать чё сделал", url: "marzhonka_music/8.mp3" },
+        { title: "Здравствуйте, дора...", url: "marzhonka_music/9.mp3" }, { title: "ИЗВИНИТЕ_НО_ЭТ...", url: "marzhonka_music/10.mp3" },
+        { title: "МАЛЫЙ ПОВЗРОС...", url: "marzhonka_music/11.mp3" }, { title: "на будильник", url: "marzhonka_music/12.mp3" },
+        { title: "НЕ БОИТСЯ НОЧИ...", url: "marzhonka_music/13.mp3" }, { title: "ну это уже пиздец...", url: "marzhonka_music/14.mp3" },
+        { title: "сборник рингтоно...", url: "marzhonka_music/15.mp3" }, { title: "Сучара", url: "marzhonka_music/16.mp3" },
+        { title: "температура от бу...", url: "marzhonka_music/17.mp3" }, { title: "У_ЗЛОГО_ДЖОРД...", url: "marzhonka_music/18.mp3" },
+        { title: "утром переслуша...", url: "marzhonka_music/19.mp3" }, { title: "хуй знает", url: "marzhonka_music/20.mp3" },
+        { title: "хуйхуй", url: "marzhonka_music/21.mp3" }, { title: "Чайник", url: "marzhonka_music/22.mp3" }
+    ];
+    let currentIndex = Math.floor(Math.random() * playlist.length);
+    const audio = document.getElementById('audio-player');
+    const titleEl = document.getElementById('track-title');
+    function loadTrack(index) {
+        audio.src = playlist[index].url;
+        titleEl.textContent = playlist[index].title;
+    }
+    function nextTrack() {
+        currentIndex = (currentIndex + 1) % playlist.length;
+        loadTrack(currentIndex);
+        audio.play().catch(e => {});
+    }
+    function prevTrack() {
+        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        loadTrack(currentIndex);
+        audio.play().catch(e => {});
+    }
+    document.getElementById('btn-next').addEventListener('click', nextTrack);
+    document.getElementById('btn-prev').addEventListener('click', prevTrack);
+    audio.addEventListener('ended', nextTrack);
+    loadTrack(currentIndex);
+</script>
+</body>
+</html>
